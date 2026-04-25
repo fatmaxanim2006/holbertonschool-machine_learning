@@ -6,21 +6,14 @@ def poly_integral(poly, C=0):
     """Calculates the integral of a polynomial"""
     if not isinstance(poly, list) or len(poly) == 0:
         return None
-
-    for x in poly:
-        if not isinstance(x, (int, float)):
-            return None
-
     if not isinstance(C, (int, float)):
         return None
-
     integral = [C]
     for i in range(len(poly)):
-        # İnteqral qaydası: (əmsal / (qüvvət + 1))
+        if not isinstance(poly[i], (int, float)):
+            return None
         val = poly[i] / (i + 1)
-        # Əgər nəticə tam ədəddirsə, int tipinə çeviririk
-        if val % 1 == 0:
-            val = int(val)
-        integral.append(val)
-
+        integral.append(int(val) if val % 1 == 0 else val)
+    while len(integral) > 1 and integral[-1] == 0:
+        integral.pop()
     return integral
