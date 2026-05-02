@@ -20,4 +20,4 @@ def add_matrices2D(mat1, mat2):
             row.append(mat1[i][j] + mat2[i][j])
         new_matrix.append(row)
         
-    return new_matrix
+    return new_matrix:%s/\s\+$//e
