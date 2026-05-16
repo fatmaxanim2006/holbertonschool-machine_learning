@@ -35,11 +35,10 @@ class Binomial:
         """ Calculates the value of the PMF for a given number of successes """
         k = int(k)
 
-        # k diapazondan kənardırsa 0 qaytarırıq
         if k < 0 or k > self.n:
             return 0
 
-        # n!, k! və (n-k)! faktoriallarının hesablanması
+        # n!, k! və (n-k)! faktoriallarının tam ədəd olaraq hesablanması
         fact_n = 1
         for i in range(1, self.n + 1):
             fact_n *= i
@@ -52,10 +51,10 @@ class Binomial:
         for i in range(1, self.n - k + 1):
             fact_nk *= i
 
-        # Kombinasiya: n! / (k! * (n - k)!)
-        combination = fact_n / (fact_k * fact_nk)
+        # Tam ədəd bölməsi (//) istifadə edirik ki, dəqiqlik itməsin
+        combination = fact_n // (fact_k * fact_nk)
 
-        # PMF düsturu: combination * (p^k) * ((1 - p)^(n - k))
+        # PMF düsturu
         pmf_value = combination * (self.p ** k) * ((1 - self.p) ** (self.n - k))
 
-        return pmf_value
+        return float(pmf_value)
