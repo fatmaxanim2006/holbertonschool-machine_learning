@@ -22,16 +22,40 @@ class Binomial:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Mean (ortalama) hesablanması
             mean = sum(data) / len(data)
-
-            # Variance (dispersiya) hesablanması
             variance = sum((x - mean) ** 2 for x in data) / len(data)
 
-            # p və n-in ilkin təmini
             p_initial = 1 - (variance / mean)
             n_rounded = round(mean / p_initial)
 
-            # n tam ədədə çevrilir, p isə n üzərindən yenidən dəqiqləşdirilir
             self.n = int(n_rounded)
             self.p = float(mean / self.n)
+
+    def pmf(self, k):
+        """ Calculates the value of the PMF for a given number of successes """
+        k = int(k)
+
+        # k diapazondan kənardırsa 0 qaytarırıq
+        if k < 0 or k > self.n:
+            return 0
+
+        # n!, k! və (n-k)! faktoriallarının hesablanması
+        fact_n = 1
+        for i in range(1, self.n + 1):
+            fact_n *= i
+
+        fact_k = 1
+        for i in range(1, k + 1):
+            fact_k *= i
+
+        fact_nk = 1
+        for i in range(1, self.n - k + 1):
+            fact_nk *= i
+
+        # Kombinasiya: n! / (k! * (n - k)!)
+        combination = fact_n / (fact_k * fact_nk)
+
+        # PMF düsturu: combination * (p^k) * ((1 - p)^(n - k))
+        pmf_value = combination * (self.p ** k) * ((1 - self.p) ** (self.n - k))
+
+        return pmf_value
