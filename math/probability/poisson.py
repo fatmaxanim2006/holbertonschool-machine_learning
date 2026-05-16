@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 Poisson distribution module
@@ -5,14 +6,10 @@ Poisson distribution module
 
 
 class Poisson:
-    """
-    Class that represents a poisson distribution
-    """
+    """ Represents a poisson distribution """
 
     def __init__(self, data=None, lambtha=1.):
-        """
-        Initialize Poisson distribution
-        """
+        """ Initializes the Poisson distribution """
         if data is None:
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
@@ -22,5 +19,24 @@ class Poisson:
                 raise TypeError("data must be a list")
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
-
             self.lambtha = float(sum(data) / len(data))
+
+    def pmf(self, k):
+        """ Calculates the value of the PMF for a given number of successes """
+        k = int(k)
+
+        if k < 0:
+            return 0
+
+        e = 2.7182818285
+
+        factorial = 1
+        for i in range(1, k + 1):
+            factorial *= i
+
+        lambtha_pow_k = self.lambtha ** k
+        e_pow_minus_lambtha = e ** (-self.lambtha)
+
+        pmf_value = (lambtha_pow_k * e_pow_minus_lambtha) / factorial
+
+        return pmf_value
