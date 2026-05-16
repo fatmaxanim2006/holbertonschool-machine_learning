@@ -55,15 +55,30 @@ class Binomial:
         if k < 0 or k > self.n:
             return 0
 
-        # Sətirlər tam qısa olsun deyə dəyişənləri kiçiltdik
         n_f = self._factorial(self.n)
         k_f = self._factorial(k)
         nk_f = self._factorial(self.n - k)
 
-        # Kombinasiya hesabı
         comb = n_f / (k_f * nk_f)
-
-        # PMF düsturu
         pmf_val = comb * (self.p ** k) * ((1 - self.p) ** (self.n - k))
 
         return pmf_val
+
+    def cdf(self, k):
+        """Verilmiş k üçün CDF dəyərini hesablayır."""
+        if not isinstance(k, (int, float)):
+            return 0
+
+        k = int(k)
+
+        if k < 0:
+            return 0
+        if k > self.n:
+            return 1
+
+        # 0-dan k-ya qədər olan bütün PMF dəyərlərini toplayırıq
+        cdf_val = 0
+        for i in range(k + 1):
+            cdf_val += self.pmf(i)
+
+        return cdf_val
