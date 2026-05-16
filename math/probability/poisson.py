@@ -39,3 +39,27 @@ class Poisson:
         pmf_value = (lambtha_pow_k * e_pow_minus_lambtha) / factorial
 
         return pmf_value
+
+    def cdf(self, k):
+        """ Calculates the value of the CDF for a given number of successes """
+        k = int(k)
+
+        if k < 0:
+            return 0
+
+        e = 2.7182818285
+        cdf_value = 0.0
+
+        # 0-dan k-ya qədər olan bütün PMF-ləri dövrlə toplayırıq
+        for i in range(k + 1):
+            factorial = 1
+            for j in range(1, i + 1):
+                factorial *= j
+
+            lambtha_pow_i = self.lambtha ** i
+            e_pow_minus_lambtha = e ** (-self.lambtha)
+
+            pmf_i = (lambtha_pow_i * e_pow_minus_lambtha) / factorial
+            cdf_value += pmf_i
+
+        return cdf_value
