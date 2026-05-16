@@ -20,7 +20,7 @@ class Binomial:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Data üzərindən n və p-ni təxmin etmək (əvvəlki tapşırıqlardan)
+            # Data üzərindən n və p-ni təxmin etmək
             mean = sum(data) / len(data)
             variance = sum((x - mean) ** 2 for x in data) / len(data)
             p_est = 1 - (variance / mean) if mean != 0 else 0.5
@@ -30,7 +30,8 @@ class Binomial:
             if n_est <= 0:
                 raise ValueError("n must be a positive value")
             if p_est <= 0 or p_est >= 1:
-                raise ValueError("p must be greater than 0 and less than 1")
+                msg = "p must be greater than 0 and less than 1"
+                raise ValueError(msg)
 
             self.n = int(n_est)
             self.p = float(p_est)
@@ -45,7 +46,7 @@ class Binomial:
         return res
 
     def pmf(self, k):
-        """Verilmiş uğurlu nəticə sayı (k) üçün PMF dəyərini hesablayır."""
+        """Verilmiş k üçün PMF dəyərini hesablayır."""
         if not isinstance(k, (int, float)):
             return 0
 
@@ -54,15 +55,15 @@ class Binomial:
         if k < 0 or k > self.n:
             return 0
 
-        # Sətirlərin 79 simvoldan uzun olmaması üçün hissələrə bölünmüş hesablama
-        n_fact = self._factorial(self.n)
-        k_fact = self._factorial(k)
-        n_k_fact = self._factorial(self.n - k)
+        # Sətirlər tam qısa olsun deyə dəyişənləri kiçiltdik
+        n_f = self._factorial(self.n)
+        k_f = self._factorial(k)
+        nk_f = self._factorial(self.n - k)
 
-        # Kombinasiya: n! / (k! * (n - k)!)
-        combination = n_fact / (k_fact * n_k_fact)
+        # Kombinasiya hesabı
+        comb = n_f / (k_f * nk_f)
 
-        # PMF = C(n, k) * p^k * (1 - p)^(n - k)
-        pmf_value = combination * (self.p ** k) * ((1 - self.p) ** (self.n - k))
+        # PMF düsturu
+        pmf_val = comb * (self.p ** k) * ((1 - self.p) ** (self.n - k))
 
-        return pmf_value
+        return pmf_val
