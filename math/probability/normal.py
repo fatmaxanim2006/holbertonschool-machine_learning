@@ -38,13 +38,28 @@ class Normal:
         pi = 3.1415926536
         e = 2.7182818285
 
-        # Düsturun eksponent (üst) hissəsi: -0.5 * ((x - mean) / stddev)^2
         exponent = -0.5 * (((x - self.mean) / self.stddev) ** 2)
-
-        # Məxrəc hissəsi: stddev * sqrt(2 * pi)
         denominator = self.stddev * ((2 * pi) ** 0.5)
 
-        # PDF dəyəri
         pdf_value = (e ** exponent) / denominator
-
         return float(pdf_value)
+
+    def cdf(self, x):
+        """ Calculates the value of the CDF for a given x-value """
+        pi = 3.1415926536
+
+        # erf funksiyası üçün daxili dəyişən (val)
+        val = (x - self.mean) / (self.stddev * (2 ** 0.5))
+
+        # Maclaurin sırası ilə erf(val) hesablanması
+        term1 = val
+        term3 = (val ** 3) / 3
+        term5 = (val ** 5) / 10
+        term7 = (val ** 7) / 42
+        term9 = (val ** 9) / 216
+
+        erf = (2 / (pi ** 0.5)) * (term1 - term3 + term5 - term7 + term9)
+
+        # CDF düsturu: 0.5 * (1 + erf)
+        cdf_value = 0.5 * (1 + erf)
+        return float(cdf_value)
