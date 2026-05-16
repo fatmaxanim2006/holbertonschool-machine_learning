@@ -21,14 +21,23 @@ def likelihood(x, n, P):
     if np.any(P < 0) or np.any(P > 1):
         raise ValueError("All values in P must be in the range [0, 1]")
 
-    # Kombinasiya (n! / (x! * (n - x)!)) hesabı
-    fact_n = np.math.factorial(n)
-    fact_x = np.math.factorial(x)
-    fact_nx = np.math.factorial(n - x)
+    # Faktorial hesabı üçün daxili köməkçi dövr
+    fact_n = 1
+    for i in range(1, n + 1):
+        fact_n *= i
+
+    fact_x = 1
+    for i in range(1, x + 1):
+        fact_x *= i
+
+    fact_nx = 1
+    for i in range(1, n - x + 1):
+        fact_nx *= i
+
+    # Kombinasiya: n! / (x! * (n - x)!)
     comb = fact_n / (fact_x * fact_nx)
 
-    # Bütün P massivi üçün element-by-element Likelihood hesablanması
-    # L = C(n, x) * P^x * (1 - P)^(n - x)
+    # Likelihood = C(n, x) * P^x * (1 - P)^(n - x)
     like_val = comb * (P ** x) * ((1 - P) ** (n - x))
 
     return like_val
