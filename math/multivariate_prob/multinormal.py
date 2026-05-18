@@ -25,12 +25,11 @@ class MultiNormal:
         if n < 2:
             raise ValueError("data must contain multiple data points")
 
-        # Ortalamanın hesablanması: hər sətir üzrə, shape (d, 1) olmalıdır
+        # Calculate mean with shape (d, 1)
         self.mean = np.mean(data, axis=1, keepdims=True)
 
-        # Məlumat nöqtələrindən ortalama çıxılır (Centering data)
+        # Center the data points
         data_centered = data - self.mean
 
-        # Kovariasiya matrisinin hesablanması: shape (d, d)
-        # data_centered ölçüsü (d, n) olduğu üçün özünü transpozisiyasına vururuq
+        # Calculate covariance matrix with shape (d, d)
         self.cov = np.matmul(data_centered, data_centered.T) / (n - 1)
