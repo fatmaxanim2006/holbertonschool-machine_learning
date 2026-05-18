@@ -55,14 +55,13 @@ class MultiNormal:
         det = np.linalg.det(self.cov)
         inv = np.linalg.inv(self.cov)
 
-        # Exponent hissəsinin hesablanması: -0.5 * (x - mu).T * inv * (x - mu)
+        # Calculate exponent: -0.5 * (x - mu).T * inv * (x - mu)
         diff = x - self.mean
         exponent = -0.5 * np.matmul(np.matmul(diff.T, inv), diff)
 
-        # Məxrəc hissəsi: sqrt((2 * pi)^d * det)
+        # Calculate denominator: sqrt((2 * pi)^d * det)
         denominator = np.sqrt(((2 * np.pi) ** d) * det)
 
-        # PDF dəyəri matris formasında (1, 1) olacağı üçün skalyar olaraq çıxarırıq
         pdf_val = np.exp(exponent) / denominator
 
         return pdf_val[0, 0]
