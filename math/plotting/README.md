@@ -1,2 +1,2 @@
-# Math - Plotting
-Bu layihə riyazi funksiyaların qrafiklərini yaratmağı əhatə edir.
+# Holberton Machine Learning Plotting
+Bu qovluq riyaziyyat və vizuallaşdırma tapşırıqlarını əhatə edir.
