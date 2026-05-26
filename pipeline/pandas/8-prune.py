@@ -8,5 +8,4 @@ def prune(df):
     """
     Removes any entries where 'Close' has NaN values.
     """
-    # subset='Close' ilə yalnız 'Close' sütununda NaN olanları sətir üzrə silirik
     return df.dropna(subset=['Close'])
