@@ -79,7 +79,8 @@ class Node:
         if self.right_child:
             out += self.right_child_add_prefix(self.right_child.__str__())
 
-        return out.rstrip("\n")
+        # Task 2 üçün __str__ mütləq səliqəli bitməlidir
+        return out
 
 
 class Leaf(Node):
@@ -133,4 +134,5 @@ class Decision_Tree():
 
     def __str__(self):
         """Returns string representation of the entire tree"""
-        return self.root.__str__() + "\n"
+        # Node-dan gələn son yeni sətir işarəsini silirik ki, vizuallaşdırma düzgün bitsin
+        return self.root.__str__().rstrip("\n") + "\n"
