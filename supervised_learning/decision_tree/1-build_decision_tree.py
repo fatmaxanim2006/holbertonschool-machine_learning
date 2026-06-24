@@ -1,4 +1,3 @@
-cat << 'EOF' > 1-build_decision_tree.py
 #!/usr/bin/env python3
 """
 Module to build a decision tree with node counting functionality
@@ -97,4 +96,3 @@ class Decision_Tree():
     def count_nodes(self, only_leaves=False):
         """Counts the total nodes or leaves in the tree"""
         return self.root.count_nodes_below(only_leaves=only_leaves)
-EOF
