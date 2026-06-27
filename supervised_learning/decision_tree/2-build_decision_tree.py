@@ -8,7 +8,7 @@ def left_child_add_prefix(text):
     new_text = "    +---> " + lines[0] + "\n"
     for x in lines[1:]:
         if x:
-            new_text += "    |     " + x + "\n"
+            new_text += "      " + x + "\n"
     return new_text
 
 
@@ -18,7 +18,7 @@ def right_child_add_prefix(text):
     new_text = "    +---> " + lines[0] + "\n"
     for x in lines[1:]:
         if x:
-            new_text += "          " + x + "\n"
+            new_text += "      " + x + "\n"
     return new_text
 
 
@@ -35,30 +35,30 @@ class Node:
         self.is_leaf = False
 
     def __str__(self):
-        """String representation of the node"""
-        res = f"node [feature={self.feature}, threshold={self.threshold}]\n"
-        res += left_child_add_prefix(str(self.left_child))
-        res += right_child_add_prefix(str(self.right_child))
+        if self.is_root:
+            res = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+        else:
+            res = f"node [feature={self.feature}, threshold={self.threshold}]\n"
+        res += left_child_add_prefix(self.left_child.__str__())
+        res += right_child_add_prefix(self.right_child.__str__())
         return res
 
 
 class Leaf:
     """Leaf class for Decision Tree"""
-    def __init__(self, value, depth=None):
+    def __init__(self, value, depth=0):
         self.value = value
         self.depth = depth
         self.is_leaf = True
 
     def __str__(self):
-        """String representation of the leaf"""
         return f"leaf [value={self.value}]"
 
 
-class DecisionTree:
-    """DecisionTree class"""
-    def __init__(self, root=None):
+class Decision_Tree:
+    """Decision Tree class"""
+    def __init__(self, root):
         self.root = root
 
     def __str__(self):
-        """String representation of the tree"""
-        return str(self.root)
+        return self.root.__str__()
