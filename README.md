@@ -1,1 +1,1 @@
-# Machine Learning - Math/Plotting
+# Holberton School - Machine Learning
