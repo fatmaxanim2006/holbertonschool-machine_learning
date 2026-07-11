@@ -1,33 +1,15 @@
 #!/usr/bin/env python3
-"""Trains a model using mini-batch gradient descent"""
+"""Converts a label vector into a one-hot matrix"""
 import tensorflow.keras as K
 
 
-def train_model(network, data, labels, batch_size, epochs,
-                 verbose=True, shuffle=False):
+def one_hot(labels, classes=None):
     """
-    Trains a model using mini-batch gradient descent
+    Converts a label vector into a one-hot matrix
 
-    network: the model to train
-    data: numpy.ndarray of shape (m, nx) containing the input data
-    labels: one-hot numpy.ndarray of shape (m, classes) containing
-        the labels of data
-    batch_size: size of the batch used for mini-batch gradient descent
-    epochs: number of passes through data for mini-batch gradient descent
-    verbose: boolean that determines if output should be printed
-        during training
-    shuffle: boolean that determines whether to shuffle the batches
-        every epoch
+    labels: numpy.ndarray containing the labels to convert
+    classes: number of classes to use for the one-hot matrix
 
-    Returns: the History object generated after training the model
+    Returns: the one-hot matrix
     """
-    history = network.fit(
-        data,
-        labels,
-        batch_size=batch_size,
-        epochs=epochs,
-        verbose=verbose,
-        shuffle=shuffle
-    )
-
-    return history
+    return K.utils.to_categorical(labels, num_classes=classes)
