@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Convolutional forward propagation module"""
+import numpy as np
+
+
+def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
+    """Performs forward propagation over a convolutional layer
+    of a neural network"""
+    m, h_prev, w_prev, c_prev = A_prev.shape
+    kh, kw, c_prev, c_new = W.shape
+    sh, sw = stride
+
+    if padding == "same":
+        ph = int(((h_prev - 1) * sh + kh - h_prev) / 2) + 1
+        pw = int(((w_prev - 1) * sw + kw - w_prev) / 2) + 1
+    else:
+        ph, pw = 0, 0
+
+    A_prev_padded = np.pad(
+        A_prev,
+        ((0, 0), (ph, ph), (pw, pw), (0, 0)),
+        mode='constant',
+        constant_values=0
+    )
+
+    h_new = int((h_prev + 2 * ph - kh) / sh) + 1
+    w_new = int((w_prev + 2 * pw - kw) / sw) + 1
+
+    Z = np.zeros((m, h_new, w_new, c_new))
+
+    for i in range(h_new):
+        for j in range(w_new):
+            for k in range(c_new):
+                h_start = i * sh
+                h_end = h_start + kh
+                w_start = j * sw
+                w_end = w_start + kw
+
+                A_slice = A_prev_padded[:, h_start:h_end, w_start:w_end, :]
+                Z[:, i, j, k] = np.sum(
+                    A_slice * W[:, :, :, k], axis=(1, 2, 3)
+                ) + b[0, 0, 0, k]
+
+    return activation(Z)
