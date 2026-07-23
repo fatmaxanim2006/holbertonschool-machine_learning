@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Builds an identity block as described in Deep Residual Learning
-for Image Recognition (2015)"""
+"""Identity Block module"""
 from tensorflow import keras as K
 
 
@@ -15,10 +14,8 @@ def identity_block(A_prev, filters):
         F3 is the number of filters in the 3x3 convolution
         F12 is the number of filters in the second 1x1 convolution
     All convolutions inside the block are followed by batch normalization
-    along the channels axis and a rectified linear activation (ReLU),
-    respectively.
-    All weights use he normal initialization with seed set to zero.
-
+    along the channels axis and a rectified linear activation (ReLU)
+    All weights use he normal initialization with seed 0
     Returns: the activated output of the identity block
     """
     F11, F3, F12 = filters
