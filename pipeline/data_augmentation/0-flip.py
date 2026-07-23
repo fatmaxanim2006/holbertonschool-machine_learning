@@ -13,4 +13,4 @@ def flip_image(image):
     Returns:
         The flipped image.
     """
-    return tf.image.flip_left_right(image)                                                              
+    return tf.image.flip_left_right(image)
