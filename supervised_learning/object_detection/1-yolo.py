@@ -84,8 +84,8 @@ class Yolo:
         box_class_probs = []
 
         image_height, image_width = image_size
-        input_height = self.model.input.shape[1]
-        input_width = self.model.input.shape[2]
+        input_height = int(self.model.input.shape[1])
+        input_width = int(self.model.input.shape[2])
 
         for i, output in enumerate(outputs):
             grid_height, grid_width, anchor_boxes, _ = output.shape
