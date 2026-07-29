@@ -63,14 +63,12 @@ class Yolo:
             box_confidences.append(box_confidence)
             box_class_probs.append(box_class_prob)
 
-            # build grid of cell coordinates
+            # build grid of cell coordinates, shape (gh, gw, anchor_boxes)
             cx = np.arange(grid_width).reshape(1, grid_width, 1)
-            cx = np.repeat(cx, grid_height, axis=0)
-            cy = np.arange(grid_height).reshape(grid_height, 1, 1)
-            cy = np.repeat(cy, grid_width, axis=1)
+            cx = np.tile(cx, (grid_height, 1, anchor_boxes))
 
-            cx = np.repeat(cx[..., np.newaxis], anchor_boxes, axis=2)
-            cy = np.repeat(cy[..., np.newaxis], anchor_boxes, axis=2)
+            cy = np.arange(grid_height).reshape(grid_height, 1, 1)
+            cy = np.tile(cy, (1, grid_width, anchor_boxes))
 
             bx = (self.sigmoid(t_xy[..., 0]) + cx) / grid_width
             by = (self.sigmoid(t_xy[..., 1]) + cy) / grid_height
