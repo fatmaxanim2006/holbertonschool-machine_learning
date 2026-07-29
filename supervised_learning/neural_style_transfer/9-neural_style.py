@@ -374,7 +374,7 @@ class NST:
 
             if J_total < best_cost:
                 best_cost = J_total
-                best_image = generated_image
+                best_image = generated_image.numpy()
 
             if step is not None and (i % step == 0 or i == iterations):
                 print("Cost at iteration {}: {}, content {}, "
@@ -382,7 +382,9 @@ class NST:
 
             if i < iterations:
                 optimizer.apply_gradients([(grads, generated_image)])
+                generated_image.assign(
+                    tf.clip_by_value(generated_image, 0, 1))
 
-        generated_image = best_image.numpy()[0]
+        generated_image = best_image[0]
 
         return generated_image, best_cost
