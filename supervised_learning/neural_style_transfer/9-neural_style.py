@@ -377,8 +377,11 @@ class NST:
                 best_image = generated_image.numpy()
 
             if step is not None and (i % step == 0 or i == iterations):
-                print("Cost at iteration {}: {}, content {}, "
-                      "style {}".format(i, J_total, J_content, J_style))
+                print(
+                    "Cost at iteration {}: {}, content {}, style {}".format(
+                        i, J_total, J_content, J_style
+                    )
+                )
 
             if i < iterations:
                 optimizer.apply_gradients([(grads, generated_image)])
