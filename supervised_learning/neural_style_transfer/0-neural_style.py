@@ -7,8 +7,10 @@ import tensorflow as tf
 class NST:
     """Performs tasks for neural style transfer"""
 
-    style_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1',
-                     'block4_conv1', 'block5_conv1']
+    style_layers = [
+        'block1_conv1', 'block2_conv1', 'block3_conv1',
+        'block4_conv1', 'block5_conv1'
+    ]
     content_layer = 'block5_conv2'
 
     def __init__(self, style_image, content_image, alpha=1e4, beta=1):
@@ -65,8 +67,9 @@ class NST:
             h_new = int(h * (512 / w))
 
         image = image[tf.newaxis, :]
-        image = tf.image.resize(image, size=(h_new, w_new),
-                                 method='bicubic')
+        image = tf.image.resize(
+            image, size=(h_new, w_new), method='bicubic'
+        )
         image = tf.clip_by_value(image / 255, 0, 1)
 
         return image
