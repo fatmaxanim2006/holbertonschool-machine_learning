@@ -66,15 +66,15 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
         if pi is None or m is None or S is None:
             return None, None, None, None, None
 
-        g, l = expectation(X, pi, m, S)
-        if g is None or l is None:
+        g, log_l = expectation(X, pi, m, S)
+        if g is None or log_l is None:
             return None, None, None, None, None
 
-        if abs(l - prev_l) <= tol:
-            prev_l = l
+        if abs(log_l - prev_l) <= tol:
+            prev_l = log_l
             i += 1
             break
-        prev_l = l
+        prev_l = log_l
     else:
         i += 1
 
