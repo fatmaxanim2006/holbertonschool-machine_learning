@@ -2,6 +2,7 @@
 """Bayesian Optimization"""
 import numpy as np
 from scipy.stats import norm
+
 GP = __import__('2-gp').GaussianProcess
 
 
@@ -19,8 +20,8 @@ class BayesianOptimization:
         t is the number of initial samples
         bounds is a tuple of (min, max) representing the bounds of the
             space in which to look for the optimal point
-        ac_samples is the number of samples that should be analyzed
-            during acquisition
+        ac_samples is the number of samples that should be analyzed during
+            acquisition
         l is the length parameter for the kernel
         sigma_f is the standard deviation given to the output of the
             black-box function
@@ -37,8 +38,8 @@ class BayesianOptimization:
 
     def acquisition(self):
         """
-        calculates the next best sample location using the Expected
-        Improvement acquisition function
+        calculates the next best sample location
+        Uses the Expected Improvement acquisition function
         Returns: X_next, EI
             X_next is a numpy.ndarray of shape (1,) representing the next
                 best sample point
@@ -47,17 +48,20 @@ class BayesianOptimization:
         """
         mu, sigma = self.gp.predict(self.X_s)
 
-        if self.minimize is True:
-            f_opt = np.min(self.gp.Y)
-            imp = f_opt - mu - self.xsi
+        if self.minimize:
+            Y_sample_opt = np.min(self.gp.Y)
+            imp = Y_sample_opt - mu - self.xsi
         else:
-            f_opt = np.max(self.gp.Y)
-            imp = mu - f_opt - self.xsi
+            Y_sample_opt = np.max(self.gp.Y)
+            imp = mu - Y_sample_opt - self.xsi
 
         with np.errstate(divide='warn'):
-            Z = imp / sigma
-            EI = imp * norm.cdf(Z) + sigma * norm.pdf(Z)
-            EI[sigma == 0.0] = 0.0
+            Z = np.zeros_like(sigma)
+            mask = sigma > 0
+            Z[mask] = imp[mask] / sigma[mask]
+            EI = np.zeros_like(sigma)
+            EI[mask] = (imp[mask] * norm.cdf(Z[mask]) +
+                        sigma[mask] * norm.pdf(Z[mask]))
 
         X_next = self.X_s[np.argmax(EI)]
 
@@ -78,13 +82,13 @@ class BayesianOptimization:
         for _ in range(iterations):
             X_next, _ = self.acquisition()
 
-            if X_next in self.gp.X:
+            if np.any(np.isclose(X_next, self.gp.X)):
                 break
 
             Y_next = self.f(X_next)
             self.gp.update(X_next, Y_next)
 
-        if self.minimize is True:
+        if self.minimize:
             idx = np.argmin(self.gp.Y)
         else:
             idx = np.argmax(self.gp.Y)
