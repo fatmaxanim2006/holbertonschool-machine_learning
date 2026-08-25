@@ -2,32 +2,27 @@
 """Bayesian Optimization"""
 import numpy as np
 from scipy.stats import norm
-
 GP = __import__('2-gp').GaussianProcess
 
 
 class BayesianOptimization:
-    """performs Bayesian optimization on a noiseless 1D Gaussian process"""
+    """Performs Bayesian optimization on a noiseless 1D Gaussian process"""
 
     def __init__(self, f, X_init, Y_init, bounds, ac_samples, l=1,
                  sigma_f=1, xsi=0.01, minimize=True):
         """
-        f is the black-box function to be optimized
-        X_init is a numpy.ndarray of shape (t, 1) representing the inputs
-            already sampled with the black-box function
-        Y_init is a numpy.ndarray of shape (t, 1) representing the outputs
-            of the black-box function for each input in X_init
-        t is the number of initial samples
-        bounds is a tuple of (min, max) representing the bounds of the
-            space in which to look for the optimal point
-        ac_samples is the number of samples that should be analyzed during
-            acquisition
-        l is the length parameter for the kernel
-        sigma_f is the standard deviation given to the output of the
-            black-box function
-        xsi is the exploration-exploitation factor for acquisition
-        minimize is a bool determining whether optimization should be
-            performed for minimization (True) or maximization (False)
+        Initialize Bayesian Optimization
+
+        f: the black-box function to be optimized
+        X_init: numpy.ndarray of shape (t, 1) - initial inputs
+        Y_init: numpy.ndarray of shape (t, 1) - initial outputs
+        bounds: tuple (min, max) representing the bounds of the space
+        ac_samples: number of samples for acquisition analysis
+        l: length parameter for the kernel
+        sigma_f: standard deviation given to the output of the black-box
+        xsi: exploration-exploitation factor
+        minimize: bool determining whether to minimize (True) or
+                  maximize (False)
         """
         self.f = f
         self.gp = GP(X_init, Y_init, l, sigma_f)
@@ -38,13 +33,12 @@ class BayesianOptimization:
 
     def acquisition(self):
         """
-        calculates the next best sample location
-        Uses the Expected Improvement acquisition function
+        Calculates the next best sample location using Expected Improvement
+
         Returns: X_next, EI
-            X_next is a numpy.ndarray of shape (1,) representing the next
-                best sample point
-            EI is a numpy.ndarray of shape (ac_samples,) containing the
-                expected improvement of each potential sample
+            X_next: numpy.ndarray of shape (1,) - next best sample point
+            EI: numpy.ndarray of shape (ac_samples,) - expected improvement
+                of each potential sample
         """
         mu, sigma = self.gp.predict(self.X_s)
 
@@ -60,29 +54,28 @@ class BayesianOptimization:
             mask = sigma > 0
             Z[mask] = imp[mask] / sigma[mask]
             EI = np.zeros_like(sigma)
-            EI[mask] = (imp[mask] * norm.cdf(Z[mask])
-                        + sigma[mask] * norm.pdf(Z[mask]))
+            EI[mask] = (imp[mask] * norm.cdf(Z[mask]) +
+                        sigma[mask] * norm.pdf(Z[mask]))
 
         X_next = self.X_s[np.argmax(EI)]
-
         return X_next, EI
 
     def optimize(self, iterations=100):
         """
-        optimizes the black-box function
-        iterations is the maximum number of iterations to perform
+        Optimizes the black-box function
+
+        iterations: maximum number of iterations to perform
         If the next proposed point is one that has already been sampled,
-            optimization should be stopped early
+        optimization is stopped early
+
         Returns: X_opt, Y_opt
-            X_opt is a numpy.ndarray of shape (1,) representing the
-                optimal point
-            Y_opt is a numpy.ndarray of shape (1,) representing the
-                optimal function value
+            X_opt: numpy.ndarray of shape (1,) - optimal point
+            Y_opt: numpy.ndarray of shape (1,) - optimal function value
         """
         for _ in range(iterations):
             X_next, _ = self.acquisition()
 
-            if np.any(np.isclose(X_next, self.gp.X)):
+            if np.any(np.all(np.isclose(self.gp.X, X_next), axis=1)):
                 break
 
             Y_next = self.f(X_next)
