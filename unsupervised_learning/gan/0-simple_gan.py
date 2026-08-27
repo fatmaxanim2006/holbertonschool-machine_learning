@@ -35,23 +35,40 @@ class Simple_GAN(keras.Model):
         self.beta_2 = .9
 
         # define the generator loss and optimizer:
-        self.generator.loss = lambda x: tf.keras.losses.MeanSquaredError()(
-            x, tf.ones(x.shape))
-        self.generator.optimizer = keras.optimizers.Adam(
+        def gen_loss(x):
+            return tf.keras.losses.MeanSquaredError()(x, tf.ones(x.shape))
+
+        self.generator.loss = gen_loss
+        gen_optimizer = keras.optimizers.Adam(
             learning_rate=self.learning_rate,
-            beta_1=self.beta_1, beta_2=self.beta_2)
-        self.generator.compile(optimizer=generator.optimizer,
-                                loss=generator.loss)
+            beta_1=self.beta_1,
+            beta_2=self.beta_2
+        )
+        self.generator.optimizer = gen_optimizer
+        self.generator.compile(
+            optimizer=self.generator.optimizer,
+            loss=self.generator.loss
+        )
 
         # define the discriminator loss and optimizer:
-        self.discriminator.loss = lambda x, y: (
-            tf.keras.losses.MeanSquaredError()(x, tf.ones(x.shape)) +
-            tf.keras.losses.MeanSquaredError()(y, -1 * tf.ones(y.shape)))
-        self.discriminator.optimizer = keras.optimizers.Adam(
+        def discr_loss(x, y):
+            real_loss = tf.keras.losses.MeanSquaredError()(
+                x, tf.ones(x.shape))
+            fake_loss = tf.keras.losses.MeanSquaredError()(
+                y, -1 * tf.ones(y.shape))
+            return real_loss + fake_loss
+
+        self.discriminator.loss = discr_loss
+        discr_optimizer = keras.optimizers.Adam(
             learning_rate=self.learning_rate,
-            beta_1=self.beta_1, beta_2=self.beta_2)
-        self.discriminator.compile(optimizer=discriminator.optimizer,
-                                    loss=discriminator.loss)
+            beta_1=self.beta_1,
+            beta_2=self.beta_2
+        )
+        self.discriminator.optimizer = discr_optimizer
+        self.discriminator.compile(
+            optimizer=self.discriminator.optimizer,
+            loss=self.discriminator.loss
+        )
 
     # generator of fake samples of size batch_size
     def get_fake_sample(self, size=None, training=False):
