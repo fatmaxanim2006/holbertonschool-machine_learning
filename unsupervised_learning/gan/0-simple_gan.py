@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Simple GAN"""
+"""Simple GAN implementation"""
+
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
@@ -7,80 +8,45 @@ import matplotlib.pyplot as plt
 
 
 class Simple_GAN(keras.Model):
-    """Simple Generative Adversarial Network"""
 
     def __init__(self, generator, discriminator, latent_generator,
                  real_examples, batch_size=200, disc_iter=2,
                  learning_rate=.005):
-        """
-        generator: generator network
-        discriminator: discriminator network
-        latent_generator: function generating latent vectors
-        real_examples: tensor of real examples
-        batch_size: size of the batches used in training
-        disc_iter: number of discriminator training iterations
-                   per generator training iteration
-        learning_rate: learning rate for both optimizers
-        """
-        super().__init__()
+        super().__init__()                         # run the __init__ of keras.Model first.
         self.latent_generator = latent_generator
-        self.real_examples = real_examples
-        self.generator = generator
-        self.discriminator = discriminator
-        self.batch_size = batch_size
-        self.disc_iter = disc_iter
+        self.real_examples    = real_examples
+        self.generator        = generator
+        self.discriminator    = discriminator
+        self.batch_size       = batch_size
+        self.disc_iter        = disc_iter
 
         self.learning_rate = learning_rate
-        self.beta_1 = .5
-        self.beta_2 = .9
+        self.beta_1 = .5                            # standard value, but can be changed if necessary
+        self.beta_2 = .9                            # standard value, but can be changed if necessary
 
         # define the generator loss and optimizer:
-        def gen_loss(x):
-            return tf.keras.losses.MeanSquaredError()(x, tf.ones(x.shape))
-
-        self.generator.loss = gen_loss
-        gen_optimizer = keras.optimizers.Adam(
-            learning_rate=self.learning_rate,
-            beta_1=self.beta_1,
-            beta_2=self.beta_2
-        )
-        self.generator.optimizer = gen_optimizer
-        self.generator.compile(
-            optimizer=self.generator.optimizer,
-            loss=self.generator.loss
-        )
+        self.generator.loss      = lambda x: tf.keras.losses.MeanSquaredError()(x, tf.ones(x.shape))
+        self.generator.optimizer = keras.optimizers.Adam(
+            learning_rate=self.learning_rate, beta_1=self.beta_1, beta_2=self.beta_2)
+        self.generator.compile(optimizer=generator.optimizer, loss=generator.loss)
 
         # define the discriminator loss and optimizer:
-        def discr_loss(x, y):
-            real_loss = tf.keras.losses.MeanSquaredError()(
-                x, tf.ones(x.shape))
-            fake_loss = tf.keras.losses.MeanSquaredError()(
-                y, -1 * tf.ones(y.shape))
-            return real_loss + fake_loss
-
-        self.discriminator.loss = discr_loss
-        discr_optimizer = keras.optimizers.Adam(
-            learning_rate=self.learning_rate,
-            beta_1=self.beta_1,
-            beta_2=self.beta_2
+        self.discriminator.loss = lambda x, y: (
+            tf.keras.losses.MeanSquaredError()(x, tf.ones(x.shape)) +
+            tf.keras.losses.MeanSquaredError()(y, -1 * tf.ones(y.shape))
         )
-        self.discriminator.optimizer = discr_optimizer
-        self.discriminator.compile(
-            optimizer=self.discriminator.optimizer,
-            loss=self.discriminator.loss
-        )
+        self.discriminator.optimizer = keras.optimizers.Adam(
+            learning_rate=self.learning_rate, beta_1=self.beta_1, beta_2=self.beta_2)
+        self.discriminator.compile(optimizer=discriminator.optimizer, loss=discriminator.loss)
 
     # generator of fake samples of size batch_size
     def get_fake_sample(self, size=None, training=False):
-        """Generates a fake sample using the generator"""
         if not size:
             size = self.batch_size
-        return self.generator(self.latent_generator(size),
-                               training=training)
+        return self.generator(self.latent_generator(size), training=training)
 
     # generator of real samples of size batch_size
     def get_real_sample(self, size=None):
-        """Generates a real sample from real_examples"""
         if not size:
             size = self.batch_size
         sorted_indices = tf.range(tf.shape(self.real_examples)[0])
@@ -89,30 +55,37 @@ class Simple_GAN(keras.Model):
 
     # overloading train_step()
     def train_step(self, useless_argument):
-        """One training step: disc_iter discriminator updates,
-        followed by one generator update"""
         for _ in range(self.disc_iter):
+            # compute the loss for the discriminator in a tape watching
+            # the discriminator's weights
             with tf.GradientTape() as disc_tape:
+                disc_tape.watch(self.discriminator.trainable_variables)
+
                 real_sample = self.get_real_sample()
                 fake_sample = self.get_fake_sample(training=True)
 
-                disc_real = self.discriminator(real_sample, training=True)
-                disc_fake = self.discriminator(fake_sample, training=True)
+                discr_real = self.discriminator(real_sample, training=True)
+                discr_fake = self.discriminator(fake_sample, training=True)
 
-                discr_loss = self.discriminator.loss(disc_real, disc_fake)
+                discr_loss = self.discriminator.loss(discr_real, discr_fake)
 
+            # apply gradient descent once to the discriminator
             discr_gradients = disc_tape.gradient(
                 discr_loss, self.discriminator.trainable_variables)
             self.discriminator.optimizer.apply_gradients(
-                zip(discr_gradients,
-                    self.discriminator.trainable_variables))
+                zip(discr_gradients, self.discriminator.trainable_variables))
 
+        # compute the loss for the generator in a tape watching the
+        # generator's weights
         with tf.GradientTape() as gen_tape:
+            gen_tape.watch(self.generator.trainable_variables)
+
             fake_sample = self.get_fake_sample(training=True)
-            disc_fake = self.discriminator(fake_sample, training=False)
+            discr_fake = self.discriminator(fake_sample, training=True)
 
-            gen_loss = self.generator.loss(disc_fake)
+            gen_loss = self.generator.loss(discr_fake)
 
+        # apply gradient descent to the generator
         gen_gradients = gen_tape.gradient(
             gen_loss, self.generator.trainable_variables)
         self.generator.optimizer.apply_gradients(
