@@ -85,3 +85,14 @@ Encodes a translation into tokens.
 - Returns: `pt_tokens, en_tokens`
   - `pt_tokens` is a `list` containing the Portuguese tokens
   - `en_tokens` is a `list` containing the English tokens
+
+### 2-dataset.py
+Updates the class `Dataset` from `1-dataset.py`.
+
+**Instance method** `def tf_encode(self, pt, en):`
+Acts as a `tensorflow` wrapper for the `encode` instance method. Sets
+the shape of the `pt` and `en` return tensors.
+
+**Class constructor** `def __init__(self):`
+Updated to tokenize the examples in `data_train` and `data_valid`
+using `tf_encode`.
