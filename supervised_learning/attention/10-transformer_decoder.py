@@ -32,8 +32,9 @@ class Decoder(tf.keras.layers.Layer):
             DecoderBlock(dm, h, hidden, drop_rate) for _ in range(N)]
         self.dropout = tf.keras.layers.Dropout(drop_rate)
 
-    def call(self, x, encoder_output, training, look_ahead_mask,
-              padding_mask):
+    def call(
+            self, x, encoder_output, training, look_ahead_mask,
+            padding_mask):
         """
         Args:
             x: tensor of shape (batch, target_seq_len, dm) containing
