@@ -69,3 +69,19 @@ for pt, en in data.data_train.take(1):
     print(pt.numpy().decode('utf-8'))
     print(en.numpy().decode('utf-8'))
 ```
+
+### 1-dataset.py
+Updates the class `Dataset` from `0-dataset.py`.
+
+**Instance method** `def encode(self, pt, en):`
+Encodes a translation into tokens.
+- `pt` is the `tf.Tensor` containing the Portuguese sentence
+- `en` is the `tf.Tensor` containing the corresponding English
+  sentence
+- The tokenized sentences include the start and end of sentence
+  tokens
+  - The start token is indexed as `vocab_size`
+  - The end token is indexed as `vocab_size + 1`
+- Returns: `pt_tokens, en_tokens`
+  - `pt_tokens` is a `list` containing the Portuguese tokens
+  - `en_tokens` is a `list` containing the English tokens
