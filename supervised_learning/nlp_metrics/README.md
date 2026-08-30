@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-# NLP Metrics
-
-This project implements NLP evaluation metrics, starting with BLEU score.
-
-# 1. Repo-nu clone et
-git clone https://github.com/fatmaxanim2006/holbertonschool-machine_learning.git
-cd holbertonschool-machine_learning
-
-# 2. Qovluğu yarat və içinə keç
-mkdir -p supervised_learning/nlp_metrics
-cd supervised_learning/nlp_metrics
-
-# 3. README.md yarat
-cat > README.md << 'EOF'
-=======
-
->>>>>>> 51bfc615940f5b54be521753ee70213045a271c1
 # NLP Metrics
 
 This project implements NLP evaluation metrics, starting with BLEU score.
@@ -23,7 +5,6 @@ This project implements NLP evaluation metrics, starting with BLEU score.
 ## Files
 
 ### 0-uni_bleu.py
-<<<<<<< HEAD
 Contains the function `uni_bleu(references, sentence)` that calculates
 the unigram BLEU score for a sentence.
 
@@ -31,11 +12,24 @@ the unigram BLEU score for a sentence.
 - `sentence` is a list containing the model proposed sentence
 - Returns the unigram BLEU score
 
-The score combines:
-1. **Modified unigram precision** — counts of matching words, clipped by
-   the maximum count found in any single reference
-2. **Brevity penalty (BP)** — penalizes sentences shorter than the
-   closest-length reference
+### 1-ngram_bleu.py
+Contains the function `ngram_bleu(references, sentence, n)` that
+calculates the n-gram BLEU score for a sentence.
+
+- `references` is a list of reference translations, each a list of words
+- `sentence` is a list containing the model proposed sentence
+- `n` is the size of the n-gram to use for evaluation
+- Returns the n-gram BLEU score
+
+### 2-cumulative_bleu.py
+Contains the function `cumulative_bleu(references, sentence, n)` that
+calculates the cumulative n-gram BLEU score for a sentence.
+
+- `references` is a list of reference translations, each a list of words
+- `sentence` is a list containing the model proposed sentence
+- `n` is the size of the largest n-gram to use for evaluation
+- All n-gram scores are weighted evenly
+- Returns the cumulative n-gram BLEU score
 
 ## Requirements
 - Python 3.6+
@@ -52,50 +46,3 @@ sentence = ["there", "is", "a", "cat", "here"]
 print(uni_bleu(references, sentence))
 # 0.6549846024623855
 ```
-=======
-
-Contains the function `uni_bleu(references, sentence)` that calculates
-
-the unigram BLEU score for a sentence.
-
-- `references` is a list of reference translations, each a list of words
-
-- `sentence` is a list containing the model proposed sentence
-
-- Returns the unigram BLEU score
-
-The score combines:
-
-1. **Modified unigram precision** — counts of matching words, clipped by
-
-   the maximum count found in any single reference
-
-2. **Brevity penalty (BP)** — penalizes sentences shorter than the
-
-   closest-length reference
-
-## Requirements
-
-- Python 3.6+
-
-- numpy
-
-## Usage
-
-```python
-
-uni_bleu = __import__('0-uni_bleu').uni_bleu
-
-references = [["the", "cat", "is", "on", "the", "mat"],
-
-              ["there", "is", "a", "cat", "on", "the", "mat"]]
-
-sentence = ["there", "is", "a", "cat", "here"]
-
-print(uni_bleu(references, sentence))
-
-# 0.6549846024623855
-
-```
-
->>>>>>> 51bfc615940f5b54be521753ee70213045a271c1
