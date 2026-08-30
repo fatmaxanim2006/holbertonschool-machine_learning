@@ -37,8 +37,9 @@ class WGAN_GP(keras.Model):
         self.generator.optimizer = keras.optimizers.Adam(
             learning_rate=self.learning_rate,
             beta_1=self.beta_1, beta_2=self.beta_2)
-        self.generator.compile(optimizer=self.generator.optimizer,
-                                loss=self.generator.loss)
+        self.generator.compile(
+            optimizer=self.generator.optimizer,
+            loss=self.generator.loss)
 
         # define the discriminator loss and optimizer:
         # x : output of the discriminator on a real sample
@@ -48,8 +49,9 @@ class WGAN_GP(keras.Model):
         self.discriminator.optimizer = keras.optimizers.Adam(
             learning_rate=self.learning_rate,
             beta_1=self.beta_1, beta_2=self.beta_2)
-        self.discriminator.compile(optimizer=self.discriminator.optimizer,
-                                    loss=self.discriminator.loss)
+        self.discriminator.compile(
+            optimizer=self.discriminator.optimizer,
+            loss=self.discriminator.loss)
 
     # generator of fake samples of size batch_size
     def get_fake_sample(self, size=None, training=False):
