@@ -96,3 +96,26 @@ the shape of the `pt` and `en` return tensors.
 **Class constructor** `def __init__(self):`
 Updated to tokenize the examples in `data_train` and `data_valid`
 using `tf_encode`.
+
+### 3-dataset.py
+Updates the class `Dataset` from `2-dataset.py` to set up the data
+pipeline.
+
+**Class constructor** `def __init__(self, batch_size, max_len):`
+- `batch_size` is the batch size for training/validation
+- `max_len` is the maximum number of tokens allowed per example
+  sentence
+
+Updates the `data_train` attribute by:
+- filtering out all examples that have either sentence with more than
+  `max_len` tokens
+- caching the dataset to increase performance
+- shuffling the entire dataset using a buffer size equal to `20000`
+- splitting the dataset into padded batches of size `batch_size`
+- prefetching the dataset using `tf.data.experimental.AUTOTUNE` to
+  increase performance
+
+Updates the `data_valid` attribute by:
+- filtering out all examples that have either sentence with more than
+  `max_len` tokens
+- splitting the dataset into padded batches of size `batch_size`
