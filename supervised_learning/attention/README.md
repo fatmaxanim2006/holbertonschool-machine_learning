@@ -125,3 +125,12 @@ Sets the following public instance attributes:
     word as a one hot vector in the target vocabulary
   - `s` is a tensor of shape `(batch, units)` containing the new
     decoder hidden state
+
+### 4-positional_encoding.py
+Contains the function `positional_encoding(max_seq_len, dm)` that
+calculates the positional encoding for a transformer.
+
+- `max_seq_len` is an integer representing the maximum sequence length
+- `dm` is the model depth
+- Returns: a `numpy.ndarray` of shape `(max_seq_len, dm)` containing
+  the positional encoding vectors
