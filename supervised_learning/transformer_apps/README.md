@@ -1,0 +1,71 @@
+# Transformer Applications
+
+This project implements machine translation with a transformer model,
+using a Portuguese-to-English dataset.
+
+## Setup
+
+TFDS can no longer download `ted_hrlr_translate/pt_to_en` because the
+upstream archive is offline. Before running any file in this project:
+
+1. Download and extract the dataset:
+```bash
+curl -L -O https://holbucket-prod.s3.fr-par.scw.cloud/projects/2422/ted_hrlr_pt_to_en.tar.gz
+mkdir -p ~/.cache/ted_hrlr/
+tar -xzf ted_hrlr_pt_to_en.tar.gz -C ~/.cache/ted_hrlr/
+```
+
+2. Download `setup.py` to the root of the project folder:
+```bash
+curl -L -O https://holbucket-prod.s3.fr-par.scw.cloud/projects/2422/setup.py
+```
+
+3. Use `load_pt2en(split)` (imported from `setup`) wherever
+   `tfds.load('ted_hrlr_translate/pt_to_en', split=split, as_supervised=True)`
+   would have been used. The return type is identical: a
+   `tf.data.Dataset` of `(pt, en)` `tf.string` pairs.
+
+## Files
+
+### 0-dataset.py
+Contains the class `Dataset` that loads and preps a dataset for
+machine translation.
+
+**Class constructor** `def __init__(self):`
+Creates the instance attributes:
+- `data_train` - the `ted_hrlr_translate/pt_to_en` `train` split as a
+  `tf.data.Dataset`, loaded via `load_pt2en('train')`
+- `data_valid` - the `ted_hrlr_translate/pt_to_en` `validation` split
+  as a `tf.data.Dataset`, loaded via `load_pt2en('validation')`
+- `tokenizer_pt` - the Portuguese tokenizer created from the training
+  set
+- `tokenizer_en` - the English tokenizer created from the training
+  set
+
+**Instance method** `def tokenize_dataset(self, data):`
+Creates sub-word tokenizers for the dataset.
+- `data` is a `tf.data.Dataset` whose examples are formatted as a
+  tuple `(pt, en)`
+  - `pt` is the `tf.Tensor` containing the Portuguese sentence
+  - `en` is the `tf.Tensor` containing the corresponding English
+    sentence
+- Uses a pre-trained tokenizer:
+  - `neuralmind/bert-base-portuguese-cased` for the Portuguese text
+  - `bert-base-uncased` for the English text
+- Trains the tokenizers with a maximum vocabulary size of `2**13`
+- Returns: `tokenizer_pt, tokenizer_en`
+
+## Requirements
+- Python 3.6+
+- TensorFlow
+- transformers
+
+## Usage
+```python
+Dataset = __import__('0-dataset').Dataset
+
+data = Dataset()
+for pt, en in data.data_train.take(1):
+    print(pt.numpy().decode('utf-8'))
+    print(en.numpy().decode('utf-8'))
+```
