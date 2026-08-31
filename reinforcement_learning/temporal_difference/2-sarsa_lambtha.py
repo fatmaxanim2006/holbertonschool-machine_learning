@@ -21,9 +21,10 @@ def epsilon_greedy(Q, state, epsilon):
     return action
 
 
-def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
-                   alpha=0.1, gamma=0.99, epsilon=1, min_epsilon=0.1,
-                   epsilon_decay=0.05):
+def sarsa_lambtha(
+        env, Q, lambtha, episodes=5000, max_steps=100,
+        alpha=0.1, gamma=0.99, epsilon=1, min_epsilon=0.1,
+        epsilon_decay=0.05):
     """
     Performs the SARSA(lambtha) algorithm
 
@@ -48,8 +49,8 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
         eligibility_trace = np.zeros_like(Q)
 
         for step in range(max_steps):
-            next_state, reward, terminated, truncated, info = env.step(
-                action)
+            step_result = env.step(action)
+            next_state, reward, terminated, truncated, info = step_result
             next_action = epsilon_greedy(Q, next_state, epsilon)
 
             td_error = (
@@ -68,7 +69,7 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
             if terminated or truncated:
                 break
 
-        epsilon = (min_epsilon + (initial_epsilon - min_epsilon) *
-                   np.exp(-epsilon_decay * ep))
+        decay = np.exp(-epsilon_decay * ep)
+        epsilon = min_epsilon + (initial_epsilon - min_epsilon) * decay
 
     return Q
