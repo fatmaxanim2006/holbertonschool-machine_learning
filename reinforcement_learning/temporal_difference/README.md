@@ -29,3 +29,20 @@ performs the Monte Carlo algorithm.
 
 ### Author
 fatmaxanim2006
+
+### 1. TD(λ)
+File: `1-td_lambtha.py`
+
+Function `td_lambtha(env, V, policy, lambtha, episodes=5000, max_steps=100, alpha=0.1, gamma=0.99)`
+performs the TD(λ) algorithm.
+
+- `env`: the environment instance
+- `V`: `numpy.ndarray` of shape `(s,)` containing the value estimate
+- `policy`: function that takes in a state and returns the next
+  action to take
+- `lambtha`: the eligibility trace factor
+- `episodes`: total number of episodes to train over
+- `max_steps`: maximum number of steps per episode
+- `alpha`: learning rate
+- `gamma`: discount rate
+- Returns: `V`, the updated value estimate
