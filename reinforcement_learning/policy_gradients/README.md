@@ -51,3 +51,18 @@ gradient (REINFORCE) algorithm.
   one episode loop)
 
 Prints `Episode: {} Score: {}` after each episode.
+
+### 3. Animate iteration
+File: `train.py` (updated)
+
+The `train` function now accepts an additional optional parameter
+`show_result` (default: `False`). When set to `True`, the
+environment is rendered every 1000 episodes.
+
+- `env`: initial environment
+- `nb_episodes`: number of episodes used for training
+- `alpha`: the learning rate
+- `gamma`: the discount factor
+- `show_result`: if `True`, render the environment every 1000
+  episodes
+- Returns: all values of the score
