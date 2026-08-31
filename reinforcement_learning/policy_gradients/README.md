@@ -23,3 +23,15 @@ of a matrix.
 
 ### Author
 fatmaxanim2006
+
+### 1. Compute the Monte-Carlo policy gradient
+File: `policy_gradient.py`
+
+Function `policy_gradient(state, weight)` computes the Monte-Carlo
+policy gradient based on a state and a weight matrix, using the
+`policy` function.
+
+- `state`: matrix representing the current observation of the
+  environment
+- `weight`: matrix of random weight
+- Returns: the action and the gradient (in this order)
