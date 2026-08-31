@@ -52,8 +52,11 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
                 action)
             next_action = epsilon_greedy(Q, next_state, epsilon)
 
-            td_error = (reward + gamma * Q[next_state, next_action] -
-                        Q[state, action])
+            td_error = (
+                reward
+                + gamma * Q[next_state, next_action]
+                - Q[state, action]
+            )
             eligibility_trace[state, action] += 1
 
             Q = Q + alpha * td_error * eligibility_trace
