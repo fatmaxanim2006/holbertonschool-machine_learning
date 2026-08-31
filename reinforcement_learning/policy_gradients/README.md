@@ -35,3 +35,19 @@ policy gradient based on a state and a weight matrix, using the
   environment
 - `weight`: matrix of random weight
 - Returns: the action and the gradient (in this order)
+
+### 2. Implement the training
+File: `train.py`
+
+Function `train(env, nb_episodes, alpha=0.000045, gamma=0.98)`
+implements a full training loop using the Monte-Carlo policy
+gradient (REINFORCE) algorithm.
+
+- `env`: initial environment
+- `nb_episodes`: number of episodes used for training
+- `alpha`: the learning rate
+- `gamma`: the discount factor
+- Returns: all values of the score (sum of all rewards during
+  one episode loop)
+
+Prints `Episode: {} Score: {}` after each episode.
